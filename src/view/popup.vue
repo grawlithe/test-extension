@@ -2,18 +2,14 @@
   <div class="main_app">
     <h2 class="text-center">Test Chrome Assistant</h2>
         <div id="chathistory">
-          {{ result }}
+          {{ newResult }}
         </div>
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search for..." id="prompttext" v-model="msg">
-            <span class="input-group-btn">
-              <button class="btn btn-default" type="button" @click="qryChat">Go!</button>
-            </span>
-        </div>
-        <div class="input-group">
-            <span class="input-group-btn">
-              <button class="btn btn-default" type="button" @click="jokeqry">Tell me a joke!</button>
-            </span>
+        <div class="">
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button type="button" class="btn btn-primary" @click="jokeqry">Joke</button>
+              <button type="button" class="btn btn-primary" @click="positiveqry">Positive</button>
+              <button type="button" class="btn btn-primary" @click="dislikeqry">Dislike</button>
+            </div>
         </div>
       </div>
 </template>
@@ -31,15 +27,22 @@ export default {
       systemProfile: 'Your temporary name is GrawlBot and you are a very helpful assistant.'
     }
   },
+  computed: {
+    newResult() {
+      return this.result
+    }
+  },
   methods: {
-    qryChat() {
-      axios.post('https://chatgpt-api.shn.hk/v1/', {
-          "model" : "gpt-3.5-turbo",
-          "messages" : [{"role" : "user", "content" : this.msg}]
+    jokeqry() {
+      axios.post('http://localhost:8080/v1/', {
+          "model" : "gpt-3.5-turbo-0301",
+          "messages" : [{"role" : "user", "content" : 'Tell me a joke!'}]
         })
         .then((res) => {
-          console.log(res)
           this.result = res.data.choices[0].message.content
+          console.log(this.result)
+
+          document.getElementById('APjFqb').value = this.result.trim()
         })
         .catch((err) => {
           console.log(err)
@@ -48,16 +51,16 @@ export default {
 
         })
     },
-    jokeqry() {
-      axios.post('https://chatgpt-api.shn.hk/v1/', {
+    positiveqry() {
+      axios.post('http://localhost:8080/v1/', {
           "model" : "gpt-3.5-turbo-0301",
-          "messages" : [{"role" : "user", "content" : 'Tell me a joke!'}]
+          "messages" : [{"role" : "user", "content" : 'Tell me a positive annecdote!'}]
         })
         .then((res) => {
-          console.log(res)
           this.result = res.data.choices[0].message.content
+          console.log(this.result)
 
-          document.getElementById('APjFqb').innerHTML = this.result
+          document.getElementById('APjFqb').value = this.result.trim()
         })
         .catch((err) => {
           console.log(err)
@@ -65,7 +68,25 @@ export default {
         .finally(() => {
 
         })
-    }
+    },
+    dislikeqry() {
+      axios.post('http://localhost:8080/v1/', {
+          "model" : "gpt-3.5-turbo-0301",
+          "messages" : [{"role" : "user", "content" : 'Tell me a disagreing situation!'}]
+        })
+        .then((res) => {
+          this.result = res.data.choices[0].message.content
+          console.log(this.result)
+
+          document.getElementById('APjFqb').value = this.result.trim()
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+        .finally(() => {
+
+        })
+    },
   },
   mounted () {
     
