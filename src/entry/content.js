@@ -8,3 +8,12 @@ const myComponent = Vue.extend({
 
 const app = new myComponent().$mount();
 document.body.prepend(app.$el);
+
+// let el = document.querySelector('.comments-comment-texteditor');
+// el.insertAdjacentHTML('afterend', app.$el);
+
+// var a = document.getElementsByClassName('comment')
+// a.addEventListener('click', function handleClick() {
+//   let el = document.querySelector('.comments-comment-box__form');
+//   el.insertAdjacentHTML('afterend', app.$el);
+// });

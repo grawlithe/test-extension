@@ -5,10 +5,10 @@
           {{ newResult }}
         </div>
         <div class="">
-            <div class="btn-group" role="group" aria-label="Basic example">
-              <button type="button" class="btn btn-primary" @click="jokeqry">Joke</button>
-              <button type="button" class="btn btn-primary" @click="positiveqry">Positive</button>
-              <button type="button" class="btn btn-primary" @click="dislikeqry">Dislike</button>
+            <div class="" role="group" aria-label="Basic example">
+              <button type="button" class="rounded-button" @click="jokeqry">Joke</button>
+              <button type="button" class="rounded-button" @click="positiveqry">Positive</button>
+              <button type="button" class="rounded-button" @click="dislikeqry">Dislike</button>
             </div>
         </div>
       </div>
@@ -24,7 +24,7 @@ export default {
       msg: '',
       msg2: '',
       result: '',
-      systemProfile: 'Your temporary name is GrawlBot and you are a very helpful assistant.'
+      systemProfile: 'You are a very kind and helpful assistant.'
     }
   },
   computed: {
@@ -34,15 +34,28 @@ export default {
   },
   methods: {
     jokeqry() {
+
+      this.msg2 = document.querySelector('span.break-words > span > span[dir="ltr"]').innerText
+      //console.log(document.querySelector('span.break-words > span > span[dir="ltr"]').innerText)
+
       axios.post('http://localhost:8080/v1/', {
           "model" : "gpt-3.5-turbo-0301",
-          "messages" : [{"role" : "user", "content" : 'Tell me a joke!'}]
+          "messages" : [
+            {
+              "role" : "system", 
+              "content" : this.systemProfile
+            },
+            {
+              "role" : "user", 
+              "content" : 'Create a joke as a reply based on this post: "' + this.msg2 + '"'
+            }
+          ]
         })
         .then((res) => {
           this.result = res.data.choices[0].message.content
-          console.log(this.result)
-
-          document.getElementById('APjFqb').value = this.result.trim()
+          console.log(this.result.trim())
+          let a = document.querySelector('.ql-editor > p')
+          a.innerHTML = this.result.trim()
         })
         .catch((err) => {
           console.log(err)
@@ -52,15 +65,28 @@ export default {
         })
     },
     positiveqry() {
+
+      this.msg2 = document.querySelector('span.break-words > span > span[dir="ltr"]').innerText
+
       axios.post('http://localhost:8080/v1/', {
           "model" : "gpt-3.5-turbo-0301",
-          "messages" : [{"role" : "user", "content" : 'Tell me a positive annecdote!'}]
+          "messages" : [
+            {
+              "role" : "system", 
+              "content" : this.systemProfile
+            },
+            {
+              "role" : "user", 
+              "content" : 'Write me a positive response to this: "' + this.msg2 + '". Maximum of 3 sentences.'
+            }
+          ]
         })
         .then((res) => {
           this.result = res.data.choices[0].message.content
-          console.log(this.result)
 
-          document.getElementById('APjFqb').value = this.result.trim()
+          let a = document.querySelector('.ql-editor')
+          a.firstChild.innerHTML = this.result.trim()
+
         })
         .catch((err) => {
           console.log(err)
@@ -70,15 +96,28 @@ export default {
         })
     },
     dislikeqry() {
+      
+      this.msg2 = document.querySelector('span.break-words > span > span[dir="ltr"]').innerText
+
       axios.post('http://localhost:8080/v1/', {
           "model" : "gpt-3.5-turbo-0301",
-          "messages" : [{"role" : "user", "content" : 'Tell me a disagreing situation!'}]
+          "messages" : [
+            {
+              "role" : "system", 
+              "content" : this.systemProfile
+            },
+            {
+              "role" : "user", 
+              "content" : 'Write me a disagreing response this: "' + this.msg2 + '". Maximum of 3 sentences.'
+            }
+          ]
         })
         .then((res) => {
           this.result = res.data.choices[0].message.content
           console.log(this.result)
 
-          document.getElementById('APjFqb').value = this.result.trim()
+          let a = document.querySelector('.ql-editor')
+          a.firstChild.innerHTML = this.result.trim()
         })
         .catch((err) => {
           console.log(err)
@@ -105,6 +144,18 @@ export default {
   color: #2c3e50;
   width: 450px; 
   padding: 10px;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
   z-index: 10000;
+}
+.rounded-button {
+  background: transparent;
+  border: 2px solid #000;
+  border-radius: 20px;
+  padding: 10px 20px;
+  color: #000;
+  margin-right: 3px;
+  margin-left: 3px;
 }
 </style>
